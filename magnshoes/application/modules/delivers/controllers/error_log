@@ -1,0 +1,4 @@
+[24-Aug-2012 13:35:13 UTC] PHP Warning:  Unterminated comment starting line 2 in /home/mixkaosc/public_html/application/config/database.php on line 2
+[25-Aug-2012 14:04:30 UTC] PHP Fatal error:  Class 'Daftar_harga_model' not found in /home/mixkaosc/public_html/application/third_party/MX/Loader.php on line 203
+[25-Aug-2012 14:05:00 UTC] PHP Fatal error:  Class 'Discount_model' not found in /home/mixkaosc/public_html/application/third_party/MX/Loader.php on line 203
+[25-Aug-2012 15:33:49 UTC] PHP Fatal error:  Call to undefined function leftShift32() in /home/mixkaosc/public_html/application/controllers/frontend.php on line 378

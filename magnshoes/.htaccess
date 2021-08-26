@@ -1,0 +1,32 @@
+###################### pengaturan di bawan ini boleh di hapus #########################################
+php_value allow_url_fopen On
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+ 
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?/$1 [L]
+ 
+RewriteBase /magnshoes/
+################### BATAS PENGHAPUSAN PENGATURAN ######################################################
+
+###################### JANGAN DIHAPUS INI UNTUK UPLOAD VIDEO #########################################
+AddType application/x-shockwave-flash .swf
+ 
+AddType application/octet-stream .flv
+AddType video/x-flv .flv
+ 
+AddType application/pdf .pdf 
+ 
+AddType video/quicktime .qt .mov
+ 
+AddType video/mpeg .mpeg .mpg .mpe
+ 
+AddType video/x-msvideo .avi
+ 
+AddType audio/mpeg3 .mp3
+ 
+AddType audio/x-mpeg-3 .mp3
+ 
+AddType video/mpeg .mp3
+ 
+AddType video/x-mpeg .mp3

@@ -1,0 +1,13 @@
+<div class="box " id="information2" style="width: 296px;">
+  <div class="box-head">Tracking</div>
+  <div class="box-body">
+    <div id="informationContent" class="tracking_wrapper sideBoxContent">
+      <h2>TRACE & TRACKING</h2>
+
+      	<textarea cols="" rows="" name="awbnum" id="no_resi"></textarea>
+      	<input class="input2" type="submit" value="Search" id="btn_tracking" />
+      	<div class="clear"></div>
+
+    </div>
+  </div>
+</div>
