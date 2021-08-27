@@ -76,11 +76,11 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                 </div>
 
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
                                 <h6 class="card-title">
-                                    Summurize for Mask Distribution Batch 2
+                                     Mask Distribution Batch 2 
                                 </h6>
                                 <div class="btn-group-md">
                                     <button class="btn btn-success">Download Data</button>
@@ -89,7 +89,7 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                 </div>
                             </div>
                             <div class="card-body">
-                                <canvas id="myChart" width="400" height="350"></canvas>
+                                <canvas id="myChart" width="40" height="35"></canvas>
                             </div>
                         </div>
                     </div>
@@ -100,7 +100,8 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                     Realtime Data Checking
                                 </h6>
         
-                                    <input placeholder="Type KPK and hit ENTER" type="" name="" class="form-control">
+                                    <input placeholder="Type KPK and hit ENTER" type="" id="input_filter" name="" class="form-control">
+                                    <input type="hidden" name="" id="event_filter_id" value="<?= $where_event_id ?>">
                         
                             </div>
                             <div class="card-body">
@@ -108,33 +109,39 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                 <table class="table table-borderless table-hover">
                                     <tr>
                                         <td>KPK</td>
-                                        <th>: I00073</th> 
+                                        <th id="display_kpk"></th> 
                                     </tr>
                                     <tr>
                                         <td>EMPLOYEE NAME</td>
-                                        <th>: M LUGINA N</th>
+                                        <th id="display_name"></th>
                                     </tr>
                                     <tr>
                                         <td>EVENT NAME</td>
-                                        <th>: MASK DISTRIBUTION BATCH 2</th>
+                                        <th id="display_event"></th>
                                     </tr>
                                     <tr>
                                         <td>STATUS</td>
-                                        <th class="text-success">:REGISTERED</th>
+                                        <th class="text-success" id="display_status"></th>
                                     </tr>
                                     <tr>
                                         <td>REGISTERED BY</td>
-                                        <th>: I00073</th>
+                                        <th id="display_registered"></th>
                                     </tr>
                                     <tr>
                                         <td>REGISTERED AT</td>
-                                        <th>: I00073</th>
+                                        <th id="display_registered_by"></th>
                                     </tr>
 
                                 </table>
-                                <button class="btn btn-danger float-right">
-                                    Unregister
+                                <div class="btn-group-md">
+                                <button class="btn btn-success  mr-2" id="button_Register">
+                                    Register
                                 </button>
+                                <button class="btn btn-danger " id="button_Unregistered">
+                                    Unregister
+                                </button>   
+                                </div>
+                                
                             </div>
                         </div>
                          <div class="card mt-2">
@@ -405,38 +412,102 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
     </div>
                                               
     <?php include"footer.php"; ?>
-
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+   <script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.3.0/dist/chartjs-gauge.min.js"></script>
 
    <script type="text/javascript">
+
+    
+
+       $('#input_filter').keypress(function (e) {
+        var get_event_id = $('#event_filter_id').val();
+        var get_kpk = $(this).val();
+
+        
+        if (e.which == 13) {
+             $.ajax({
+              url: "http://153.12.3.190:8080/app/view/api_event?event_id",
+              type: "get", //send it through get method
+              data: { 
+                event_id: get_event_id, 
+                kpk: get_kpk
+              },
+              success: function(response) {
+                console.log(JSON.parse(response))
+                $.each(JSON.parse(response), function( k, v ) {
+                  
+
+                  $('#display_kpk').text(v.KPK);
+                  $('#display_event').text(v.event_id);
+                  
+                  $('#display_name').text(v.EMPLOYEE_NAME);
+                  if(v.CREATED_AT == "0000-00-00 00:00:00"){
+                    $('#display_status').removeClass('text-success');
+                    $('#display_status').addClass('text-danger');
+                    $('#display_status').text("Unregistered");
+                    $('#display_registered_by').text("-");
+                    $('#display_registered').text("-")
+
+                    $('#button_Unregistered').attr('disabled', true);
+                    $('#button_Register').attr('disabled', false);
+
+                  }else{
+                    $('#display_status').removeClass('text-danger');
+                    $('#display_status').addClass('text-success');
+                    $('#display_status').text(v.DESCRIPTION);
+                    $('#display_registered_by').text(v.CREATED_AT);
+                    $('#display_registered').text(v.INPUTTED_BY)
+                    $('#button_Unregistered').attr('disabled', false);
+                    $('#button_Register').attr('disabled', true)
+                  }
+                 
+                  
+                });
+                 
+              },
+              error: function(xhr) {
+                //Do Something to handle error
+              }
+            });
+
+         }
+
+        });
+
+
+
+
        var ctx = $('#myChart');
        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Unregistered', 'Registered'],
-                datasets: [{
-                    label: '# of Votes',
-                    data: [7579, 760],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)'
-                       
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)'
-                       
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+            type: 'gauge',
+                  data: {
+                    datasets: [{
+                      value: 0.5,
+                      minValue: 0,
+                      data: [1, 2, ],
+                      backgroundColor: ['#66AB8C', '#FF533D'],
+                    }]
+                  },
+                  options: {
+                    needle: {
+                      radiusPercentage: 2,
+                      widthPercentage: 3.2,
+                      lengthPercentage: 80,
+                      color: 'rgba(0, 0, 0, 1)'
+                    },
+                    valueLabel: {
+                      display: true,
+                      formatter: (value) => {
+                        return '$' + Math.round(value);
+                      },
+                      color: 'rgba(255, 255, 255, 1)',
+                      backgroundColor: 'rgba(0, 0, 0, 1)',
+                      borderRadius: 1,
+                      padding: {
+                        top: 1,
+                        bottom: 1
+                      }
                     }
-                }
-            }
+                  }
         });
 
 

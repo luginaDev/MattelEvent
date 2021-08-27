@@ -281,6 +281,23 @@ class EventController
             return json_encode($data);
         }
 
+
+        public function getJsonEmployeeWhere($event_id, $kpk)
+        {
+            global $connection;
+            $sql = "SELECT * FROM EMPLOYEE where event_id = '$event_id' AND KPK='$kpk'";
+            $query = mysqli_query($connection, $sql);
+            $data = [];
+
+            foreach($query as $row)
+            {
+                $data[]=$row;
+            }
+
+            return json_encode($data);
+
+        }
+
 }
 
 
