@@ -10,7 +10,9 @@
   <script src="../assets/plugins/datatables-net-bs4/dataTables.bootstrap4.js"></script>
   <script src="../assets/plugins/chartjs/Chart.min.js"></script>
   <script src="../js/jquery.table2excel.js"></script>
-
+  <script src="../assets/js/raphael.min.js"></script>
+  <script src="../assets/js/justgage.js"></script>
+  
 
 
 
@@ -22,6 +24,8 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+ 
   <script>
       $('#master_employee').DataTable({
                 scrollY: 600,

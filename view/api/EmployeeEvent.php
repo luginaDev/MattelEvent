@@ -8,8 +8,4 @@ $kpk      =$_GET['kpk'];
 $data =  new EventController();
 print($data->getJsonEmployeeWhere($event_id, $kpk));
 
-
-
-
-
  ?>

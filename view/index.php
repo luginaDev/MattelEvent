@@ -4,7 +4,7 @@ session_start();
 include "connection.php";
 include "header.php";
 $data = new EventController;
-/* for show data  http://153.12.3.190/*/
+/* for show data  http://153.12.3.190/*/ 
 $collectionEvent = $data->showAllData('contect');
 $data_where = $data->selectWhere('contect','status', 'active');
 foreach ($data_where as $where){
@@ -76,24 +76,35 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <div class="card">
-                            <div class="card-header">
-                                <h6 class="card-title">
+                       
+                                <h6 class="card-title mt-4 ml-4">
                                      Mask Distribution Batch 2 
                                 </h6>
-                                <div class="btn-group-md">
-                                    <button class="btn btn-success">Download Data</button>
-                                    <button class="btn btn-primary">Upload Data</button>
-                                    <button class="btn btn-danger">Reset Data</button>
-                                </div>
-                            </div>
+                               
+                        
                             <div class="card-body">
-                                <canvas id="myChart" width="40" height="35"></canvas>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div id="g4" class="gauge"></div> 
+                                            </div>
+                                            <div class="col-6">
+                                                <div id="g3" class="gauge"></div>         
+                                            </div>
+                                        </div>
+                                             
+                                   
+                              
+                                            
+                               
+                                                              
+                                   
+                               
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
                                 <h6 class="card-title">
@@ -137,14 +148,17 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                 <button class="btn btn-success  mr-2" id="button_Register">
                                     Register
                                 </button>
-                                <button class="btn btn-danger " id="button_Unregistered">
+                                <button class="btn btn-primary " id="button_Unregistered">
                                     Unregister
                                 </button>   
                                 </div>
                                 
                             </div>
                         </div>
-                         <div class="card mt-2">
+                         
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <div class="card">
                             <div class="card-body">
                                 <h6 class="card-title">Master Event</h6>
                                 <div class="">
@@ -152,7 +166,7 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    <button class="btn btn-icon btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal"><i data-feather="plus" ></i> </button></th>
+                                                    <button class="btn btn-icon btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal"><i data-feather="plus" ></i> </button></th>
                                                 <th>Event Image</th>
                                                 <th>Event Title</th>
                                               
@@ -390,7 +404,7 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                     <div class="btn-group float-right">
                                        <form method="post"  action="" id="form-delete-event">
                                             <input type="hidden" name="btn-reset-data">
-                                            <button class="btn btn-danger" type="button" id="btn-reset-data" name="" onclick="deleteEvent()">Reset data</button>
+                                            <button class="btn btn-primary" type="button" id="btn-reset-data" name="" onclick="deleteEvent()">Reset data</button>
                                        </form>
                                     </div>
                                 </div>
@@ -413,6 +427,64 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                               
     <?php include"footer.php"; ?>
    <script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.3.0/dist/chartjs-gauge.min.js"></script>
+
+     <script>
+    /** Random integer  */
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+
+
+      var g4 = new JustGage({
+        id: "g4",
+                value: 1024,
+                min: 0,
+                max: 8555,
+                title: "Target",
+                pointer: true,
+                
+      relativeGaugeSize: true,
+        pointerOptions: {
+                toplength: 10,
+                bottomlength: 10,
+                bottomwidth: 2,
+                color: '#8e8e93'
+            },
+                label: "",
+                displayRemaining: true
+      });
+
+
+      var g4 = new JustGage({
+        id: 'g3',
+        value: 70,
+        min: 0,
+        max: 100,
+        symbol: '%',
+        displayRemaining: true,
+        relativeGaugeSize: true,
+        pointer: true,
+      
+        pointerOptions: {
+                toplength: 10,
+                bottomlength: 10,
+                bottomwidth: 2,
+                color: '#8e8e93'
+            },
+        gaugeWidthScale: 0.1,
+        counter: true
+      });
+
+      document.getElementById('gauge_refresh').addEventListener('click', function () {
+      
+        g4.refresh(getRandomInt(0, 100));
+      });
+    });
+  </script>
+
+
 
    <script type="text/javascript">
 
@@ -476,39 +548,39 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
 
 
 
-       var ctx = $('#myChart');
-       var myChart = new Chart(ctx, {
-            type: 'gauge',
-                  data: {
-                    datasets: [{
-                      value: 0.5,
-                      minValue: 0,
-                      data: [1, 2, ],
-                      backgroundColor: ['#66AB8C', '#FF533D'],
-                    }]
-                  },
-                  options: {
-                    needle: {
-                      radiusPercentage: 2,
-                      widthPercentage: 3.2,
-                      lengthPercentage: 80,
-                      color: 'rgba(0, 0, 0, 1)'
-                    },
-                    valueLabel: {
-                      display: true,
-                      formatter: (value) => {
-                        return '$' + Math.round(value);
-                      },
-                      color: 'rgba(255, 255, 255, 1)',
-                      backgroundColor: 'rgba(0, 0, 0, 1)',
-                      borderRadius: 1,
-                      padding: {
-                        top: 1,
-                        bottom: 1
-                      }
-                    }
-                  }
-        });
+       // var ctx = $('#myChart');
+       // var myChart = new Chart(ctx, {
+       //      type: 'gauge',
+       //            data: {
+       //              datasets: [{
+       //                value: 0.5,
+       //                minValue: 0,
+       //                data: [1, 2, ],
+       //                backgroundColor: ['#66AB8C', '#FF533D'],
+       //              }]
+       //            },
+       //            options: {
+       //              needle: {
+       //                radiusPercentage: 2,
+       //                widthPercentage: 3.2,
+       //                lengthPercentage: 80,
+       //                color: 'rgba(0, 0, 0, 1)'
+       //              },
+       //              valueLabel: {
+       //                display: true,
+       //                formatter: (value) => {
+       //                  return '$' + Math.round(value);
+       //                },
+       //                color: 'rgba(255, 255, 255, 1)',
+       //                backgroundColor: 'rgba(0, 0, 0, 1)',
+       //                borderRadius: 1,
+       //                padding: {
+       //                  top: 1,
+       //                  bottom: 1
+       //                }
+       //              }
+       //            }
+       //  });
 
 
        // var ctx = $('#RegisteringMember');

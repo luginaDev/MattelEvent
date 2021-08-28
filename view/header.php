@@ -22,8 +22,15 @@
     <link href="../assets/plugins/datatables-net/dataTables.bootstrap4.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 
+
     <link href="../css/app.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <!-- end common css -->
+    <style type="text/css">
+        .size-3 {
+            width: 148%;
+        }
+    </style>
 
 </head>
 
