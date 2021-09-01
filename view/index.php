@@ -11,6 +11,8 @@ foreach ($data_where as $where){
     $where_event_id =$where['id']; 
 }
 
+
+
 $collectionEmployee = $data->selectWhere2('employee','DESCRIPTION', 'Registered','event_id', $where_event_id);
 $collectionEmployeeNotConfirmed  = $data->selectWhere2('employee','DESCRIPTION', '','event_id', $where_event_id);
 $countEmployee = $data->selectCount('employee','event_id', $where_event_id);
@@ -78,13 +80,19 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                 <div class="row">
                     <div class="col-md-8">
                         <div class="card">
-                       
-                                <h6 class="card-title mt-4 ml-4">
-                                     Mask Distribution Batch 2 
-                                </h6>
-                               
+                            <div class="card-header">
+                                
+                                <div class="btn-group-md">
+                                    <button class="btn btn-warning">Reset Data</button>
+                                    <button class="btn btn-primary mr-2">Upload Data</button>
+                                    <button class="btn btn-success mr-2">Download Data</button>
+                                </div>   
+                            </div>
+                              
+                              
                         
                             <div class="card-body">
+                              
                                         <div class="row">
                                             <div class="col-6">
                                                 <div id="g4" class="gauge"></div> 
@@ -107,9 +115,7 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header">
-                                <h6 class="card-title">
-                                    Realtime Data Checking
-                                </h6>
+                          
         
                                     <input placeholder="Type KPK and hit ENTER" type="" id="input_filter" name="" class="form-control">
                                     <input type="hidden" name="" id="event_filter_id" value="<?= $where_event_id ?>">
@@ -130,6 +136,13 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                         <td>EVENT NAME</td>
                                         <th id="display_event"></th>
                                     </tr>
+                                    <!-- for display event  -->
+                                    <p style="display: none;" id="event_active"><?php
+                                    foreach($data_where as $data){
+                                        echo $data['event_name'];
+                                      }?></p>
+                                    
+                                    <!-- end display -->
                                     <tr>
                                         <td>STATUS</td>
                                         <th class="text-success" id="display_status"></th>
@@ -488,8 +501,6 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
 
    <script type="text/javascript">
 
-    
-
        $('#input_filter').keypress(function (e) {
         var get_event_id = $('#event_filter_id').val();
         var get_kpk = $(this).val();
@@ -505,11 +516,12 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
               },
               success: function(response) {
                 console.log(JSON.parse(response))
+                var event_name = $('#event_active').text();
                 $.each(JSON.parse(response), function( k, v ) {
                   
 
                   $('#display_kpk').text(v.KPK);
-                  $('#display_event').text(v.event_id);
+                  $('#display_event').text(event_name);
                   
                   $('#display_name').text(v.EMPLOYEE_NAME);
                   if(v.CREATED_AT == "0000-00-00 00:00:00"){
