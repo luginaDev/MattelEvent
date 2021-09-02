@@ -30,12 +30,12 @@ $berhasil = 0;
 for ($i=2; $i<=$jumlah_baris; $i++){
  
 	// menangkap data dan memasukkan ke variabel sesuai dengan kolumnya masing-masing
-	$kpk     = $data->val($i, 1);
-	$employee_name  = $data->val($i, 2);
+	$kpk     = str_replace("'", '', $data->val($i, 1));
+	$employee_name  = str_replace("'", '', $data->val($i, 2));
 	try {
 		 if($employee_name != "" && $kpk != ""){
 			// input data ke database (table data_pegawai)
-			mysqli_query($connection,"INSERT into employee (KPK,EMPLOYEE_NAME,event_id,CREATED_AT) values('$kpk','$employee_name',$event_id,'')");
+			mysqli_query($connection,"INSERT into employee (KPK,EMPLOYEE_NAME,event_id,CREATED_AT) values('$kpk','$employee_name','$event_id','')");
 			
 		}
 	 

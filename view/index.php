@@ -4,6 +4,7 @@ session_start();
 include "connection.php";
 include "header.php";
 $data = new EventController;
+$_SESSION['username']= $_GET['username'];
 /* for show data  http://153.12.3.190/*/ 
 $collectionEvent = $data->showAllData('contect');
 $data_where = $data->selectWhere('contect','status', 'active');
@@ -12,13 +13,16 @@ foreach ($data_where as $where){
 }
 
 
-
 $collectionEmployee = $data->selectWhere2('employee','DESCRIPTION', 'Registered','event_id', $where_event_id);
 $collectionEmployeeNotConfirmed  = $data->selectWhere2('employee','DESCRIPTION', '','event_id', $where_event_id);
 $countEmployee = $data->selectCount('employee','event_id', $where_event_id);
 foreach($countEmployee as $totalEmployee){
    $dataTotalEmployee =  $totalEmployee['COUNT(*)'];
 }
+
+$countDatas =  $data->countData('employee', 'event_id', $where_event_id);
+$countEmployeeRegistered =  $data->countDataRegistered('employee', 'event_id', $where_event_id, 'DESCRIPTION', 'Registered');
+
 $countEmployeeNotConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION', '','event_id', $where_event_id);
 $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION', 'Registered','event_id', $where_event_id);
     /* for insert data */
@@ -92,7 +96,8 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                               
                         
                             <div class="card-body">
-                              
+                                      <input type="hidden" name="" id="count_employee" value="<?= $countDatas?>">
+                                      <input type="hidden" name="" id="count_registered_employee" value="<?= $countEmployeeRegistered ?>">
                                         <div class="row">
                                             <div class="col-6">
                                                 <div id="g4" class="gauge"></div> 
@@ -101,14 +106,6 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                                                 <div id="g3" class="gauge"></div>         
                                             </div>
                                         </div>
-                                             
-                                   
-                              
-                                            
-                               
-                                                              
-                                   
-                               
                             </div>
                         </div>
                     </div>
@@ -117,7 +114,7 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                             <div class="card-header">
                           
         
-                                    <input placeholder="Type KPK and hit ENTER" type="" id="input_filter" name="" class="form-control">
+                                    <input placeholder="Type KPK and hit ENTER" type="" maxlength="6" id="input_filter" name="" class="form-control">
                                     <input type="hidden" name="" id="event_filter_id" value="<?= $where_event_id ?>">
                         
                             </div>
@@ -158,10 +155,10 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
 
                                 </table>
                                 <div class="btn-group-md">
-                                <button class="btn btn-success  mr-2" id="button_Register">
+                                <button class="btn btn-success  mr-2" disabled id="button_Register" onclick="registered()">
                                     Register
                                 </button>
-                                <button class="btn btn-primary " id="button_Unregistered">
+                                <button class="btn btn-primary " disabled id="button_Unregistered" onclick="unregistered()">
                                     Unregister
                                 </button>   
                                 </div>
@@ -169,8 +166,9 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                             </div>
                         </div>
                          
-                    </div>
-                    <div class="col-md-6 mt-2">
+                    </div>  
+                    
+                    <div class="col-md-4 mt-2">
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-title">Master Event</h6>
@@ -328,10 +326,11 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                             </div>
                         </div>
                     </div>
+
                 </div>    
 
                <!--  <div class="row">
-
+                input_filter
                     <div class="col-md-8 stretch-card">
                         <div class="card">
                             <div class="card-body">
@@ -447,14 +446,18 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    function percentage(partialValue, totalValue) {
+    return (100 * partialValue) / totalValue;
+    }
+
     document.addEventListener("DOMContentLoaded", function (event) {
 
 
       var g4 = new JustGage({
         id: "g4",
-                value: 1024,
+                value: $('#count_registered_employee').val(),
                 min: 0,
-                max: 8555,
+                max:$('#count_employee').val(),
                 title: "Target",
                 pointer: true,
                 
@@ -472,14 +475,12 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
 
       var g4 = new JustGage({
         id: 'g3',
-        value: 70,
+        value: percentage($('#count_registered_employee').val(), $('#count_employee').val()),
         min: 0,
         max: 100,
         symbol: '%',
-        displayRemaining: true,
         relativeGaugeSize: true,
         pointer: true,
-      
         pointerOptions: {
                 toplength: 10,
                 bottomlength: 10,
@@ -501,11 +502,76 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
 
    <script type="text/javascript">
 
-       $('#input_filter').keypress(function (e) {
+
+        function registered(){
+
+            // function buat check data
+
+              var get_event_id = $('#event_filter_id').val();
+              var get_kpk = $('#input_filter').val();
+                $.ajax({
+                url:"http://153.12.3.190:8080/app/view/registered",
+                type:"post",
+                data:{
+                    kpk:get_kpk,
+                    event_id:get_event_id
+                },
+                success:function(response){
+                   if(response == "success"){
+                         
+
+                          Swal.fire('Registered!', '', 'success').then(function () {
+                            location.reload();
+                        });
+                    }else{
+                  
+
+                         Swal.fire('Registered Failed!', '', 'Warning').then(function () {
+                            location.reload();
+                        });
+                    }
+
+                }
+                });
+        }
+
+        function unregistered(){
+              var get_event_id = $('#event_filter_id').val();
+        var get_kpk = $('#input_filter').val();
+                $.ajax({
+                url:"http://153.12.3.190:8080/app/view/unregistered",
+                type:"post",
+                data:{
+                    kpk:get_kpk,
+                    event_id:get_event_id
+                },
+                success:function(response){
+                    console.log(response);
+                     if(response == "success"){
+                         
+
+                          Swal.fire('Unregistered!', '', 'success').then(function () {
+                            location.reload();
+                        });
+                    }else{
+                  
+
+                         Swal.fire('Unregistered Failed!', '', 'Warning').then(function () {
+                            location.reload();
+                        });
+                    }
+
+                   
+                }
+                });
+        }
+
+
+       $('#input_filter').keyup(function (e) {
         var get_event_id = $('#event_filter_id').val();
         var get_kpk = $(this).val();
-
-        
+        $('#button_Register').attr('disabled', true);
+        $('#button_Unregistered').attr('disabled', true);
         if (e.which == 13) {
              $.ajax({
               url: "http://153.12.3.190:8080/app/view/api_event?event_id",
@@ -515,6 +581,15 @@ $countEmployeeConfirmed = $data->select2CountNotEqual('employee', 'DESCRIPTION',
                 kpk: get_kpk
               },
               success: function(response) {
+                console.log(response.length)
+
+                if(response.length == "2"){
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Oops...',
+                      text: 'Data not found!'
+                    })
+                }
                 console.log(JSON.parse(response))
                 var event_name = $('#event_active').text();
                 $.each(JSON.parse(response), function( k, v ) {

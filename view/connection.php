@@ -74,6 +74,52 @@ class EventController
         return $data;
     }
 
+    public function countData($table,$where, $whereValues)
+    {
+      global $connection;
+        $sql  = "SELECT COUNT(*) as 'total' FROM $table WHERE $where = '$whereValues' ";
+        $query = mysqli_query($connection, $sql);
+        $data = mysqli_fetch_assoc($query);
+        return $data['total'];   
+    }
+
+    public function countDataRegistered($table,$where,$whereValues,$where2,$status)
+    {
+        global $connection;
+        $sql = "SELECT COUNT(*) as 'total' FROM $table WHERE $where='$whereValues' AND $where2='$status' ";
+        $query =  mysqli_query($connection, $sql);
+        //$data =  mysqli_fetch_assoc($query);
+        $data =  mysqli_fetch_assoc($query);
+        return $data['total'];
+    }
+
+    public function registered($table, $kpk, $event_id, $registered)
+    {
+        global $connection;
+        $created_at = date('Y-m-d H:i:s');
+        $sql = "UPDATE $table set DESCRIPTION='registered', CREATED_AT='$created_at', INPUTTED_BY='$kpk' where event_id = '$event_id' AND KPK='$kpk'";
+        $query =  mysqli_query($connection, $sql);
+        if($query){
+            return "success";
+        }else{
+            return "failed";
+        }
+  
+    }
+
+     public function unregistered($table, $kpk, $event_id, $registered_by)
+    {
+        global $connection;
+        $created_at = date('Y-m-d H:i:s');
+        $sql = "UPDATE $table set DESCRIPTION='', CREATED_AT='', INPUTTED_BY='' where event_id = '$event_id' AND KPK='$kpk'";
+        $query =  mysqli_query($connection, $sql);
+        if($query){
+            return "success";
+        }else{
+            return "failed";
+        }
+    }
+
     public function validateImage(){
         global $connection;
         $name 		= $_FILES['image_of_content']['name'];
